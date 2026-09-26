@@ -1,0 +1,9 @@
+# 构建上下文里排除：密钥、向量库数据、缓存、git
+.env
+data/chroma/
+data/uploads/
+__pycache__/
+*.pyc
+.git/
+.idea/
+.vscode/

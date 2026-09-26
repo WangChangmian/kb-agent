@@ -1,0 +1,14 @@
+services:
+  kb-agent:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file: .env                 # 密钥从 .env 注入，不写进镜像
+    volumes:
+      - ./data:/app/data           # 向量库持久化：容器重建不丢数据
+    healthcheck:                   # 探活：配合 /health 接口
+      test: ["CMD", "python", "-c",
+             "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3

@@ -1,0 +1,12 @@
+[
+  {"question": "年假满一年可以休几天？", "answer_hint": "5 天", "section": "年假制度", "not_found": false},
+  {"question": "工作满十年年假是多少天？", "answer_hint": "15 天", "section": "年假制度", "not_found": false},
+  {"question": "休年假要通过什么系统申请？", "answer_hint": "OA", "section": "年假制度", "not_found": false},
+  {"question": "工作日加班费按几倍工资计算？", "answer_hint": "1.5 倍", "section": "加班与调休", "not_found": false},
+  {"question": "法定节假日加班怎么算？", "answer_hint": "3 倍", "section": "加班与调休", "not_found": false},
+  {"question": "报销的发票抬头是什么？", "answer_hint": "星辰科技有限公司", "section": "报销流程", "not_found": false},
+  {"question": "财务审批报销需要几个工作日？", "answer_hint": "3 个工作日", "section": "报销流程", "not_found": false},
+  {"question": "每周几是全员远程办公日？", "answer_hint": "周三", "section": "远程办公政策", "not_found": false},
+  {"question": "每年培训补贴额度是多少？", "answer_hint": "2000 元", "section": "培训与学习补贴", "not_found": false},
+  {"question": "公司食堂在哪里？", "answer_hint": "未找到", "section": "无", "not_found": true}
+]

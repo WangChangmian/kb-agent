@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>知识库回答 — 流式演示</title>
+    <style>
+        body {
+            font-family: "Microsoft YaHei",sans-serif;max-width:720px;margin:40px auto;padding: 0 16px;
+        }
+        #answer {
+            white-space: pre-wrap;min-height: 120px;border: 1px solid #ccc; border-radius: 8px;padding:14px;margin-top:16px;
+        }
+        #sources{
+            margin-top: 10px;color: #555;font-size:13px;
+        }
+    </style>
+</head>
+<body>
+<h2>📚 星辰科技知识库问答</h2>
+<input id="q" style="width:65%; padding:8px;" placeholder="输入问题…">
+<button onclick="ask()" style="padding:8px 20px;">发送</button>
+<div id="answer"></div>
+<div id="sources"></div>
+
+<script>
+async function ask() {
+  const q = document.getElementById('q').value.trim();
+  if (!q) return;
+  const answerEl = document.getElementById('answer');
+  const sourcesEl = document.getElementById('sources');
+  answerEl.textContent = '';
+  sourcesEl.textContent = '';
+
+  // ① EventSource 只能 GET，所以用 fetch + ReadableStream
+  const resp = await fetch('/chat/stream', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({question: q})
+  });
+  const reader = resp.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = '';
+
+  while (true) {
+    const {done, value} = await reader.read();     // ② 读流
+    if (done) break;
+    buffer += decoder.decode(value, {stream: true});
+
+    // ③ 按空行切事件
+    const events = buffer.split('\n\n');
+    buffer = events.pop() ?? '';                   // 最后一段可能不完整，留给下次
+    for (const ev of events) {
+      const line = ev.split('\n').find(l => l.startsWith('data: '));
+      if (!line) continue;
+      const msg = JSON.parse(line.slice(6));
+      if (msg.type === 'token') {
+        answerEl.textContent += msg.content;       // 打字机：逐字追加
+      }
+      if (msg.type === 'sources') {
+        if (msg.sources.length === 0) {
+          sourcesEl.textContent = '（无引用来源）';
+        } else {
+          sourcesEl.innerHTML = '<b>📎 引用来源：</b><br>' +
+            msg.sources.map(s => `· <b>${s.source.split('/').pop()}</b>（score ${s.score}）`).join('<br>');
+        }
+      }
+    }
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+# LangChain 1.x 系列（徒弟环境为 1.2.12；0.3 系列包 = 适配 1.x 的版本线）
+#langchain>=1.0
+#langchain-openai>=0.3
+#langchain-community>=0.3
+#langchain-text-splitters>=0.3
+#langchain-chroma>=0.1
+#langgraph>=1.0
+#chromadb>=0.5
+#
+## Web / 配置
+#fastapi>=0.115
+#uvicorn[standard]>=0.30
+#pydantic>=2.7
+#pydantic-settings>=2.3
+#python-dotenv>=1.0
+
+# 本地 BGE embeddings（.env 里 EMBEDDING_PROVIDER=bge 时取消注释）
+# langchain-huggingface>=0.2
+# sentence-transformers>=3.0
+
+
+langchain>=1.0,<2.0
+langchain-openai>=0.3
+langchain-community>=0.3
+langchain-text-splitters>=0.3
+langchain-chroma>=0.1
+langchain-milvus>=0.2,<0.3          # 0.3.x 有连接问题，锁在 0.2.x
+pymilvus>=2.5.7,<2.6                # 满足 langchain-milvus 要求
+chromadb>=0.5
+langgraph>=1.0
+fastapi>=0.115
+uvicorn[standard]>=0.30
+pydantic>=2.7
+pydantic-settings>=2.3
+python-dotenv>=1.0
+pytest>=8.0
