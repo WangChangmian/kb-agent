@@ -45,8 +45,10 @@ def run_basic_eval(verbose: bool = True):
         answer_hits += answer_ok
 
         if verbose:
-            mark_r = "✓" if retrieval_ok else "✗"
-            mark_a = "✓" if answer_ok else "✗"
+            # 注意：用 √ / × 而不是 ✓ / ✗ —— 后者不在 GBK 字符集里，
+            # 一旦输出被重定向或管道捕获（CI、日志），就会 UnicodeEncodeError 崩溃。
+            mark_r = "√" if retrieval_ok else "×"
+            mark_a = "√" if answer_ok else "×"
             print(f"[检索{mark_r} 回答{mark_a}] {q}")
             if not answer_ok:
                 print(f"    标准: {item['answer_hint']!r} | 实际: {answer[:60]!r}")

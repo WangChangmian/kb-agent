@@ -33,6 +33,15 @@ def get_embeddings():
         api_key=api_key,
         base_url=settings.embedding_base_url or None,
         provider="openai",   # 硅基流动走 OpenAI 兼容协议
+        # ⚠️ 关键修复：langchain-openai 默认 check_embedding_ctx_length=True。
+        # 它内部会用 tiktoken（OpenAI 的【英文】分词器）把文本编码成 token、按 token 切块、
+        # 再用 tokenizer.decode() 还原成文本去嵌入、最后多块取平均。
+        # 对非 OpenAI 模型（如 bge-m3）+ 中文语料，这一步会破坏向量：
+        #   - 相关块相似度 0.23、无关块 0.67（语义排序完全颠倒）
+        #   - 评估指标 Recall/准确率从 90% / 100% 掉到 10% / 20%
+        # 关掉之后排序恢复正常（相关 0.74 / 无关 0.35）。
+        # 改完必须删除并重建向量库，旧向量是坏的。
+        check_embedding_ctx_length=False,
     )
 
 
