@@ -63,7 +63,7 @@ EMBEDDING_MODEL=BAAI/bge-m3
 
 ### 9. `json.decoder.JSONDecodeError` / `OutputParserException`
 **原因**：你手写 `json.loads()` 解析模型输出（模型偶尔输出非标准 JSON）。
-**解决（正确姿势）**：永远用 `with_structured_output(PydanticModel)`，别自己 `json.loads`。这就是第一课的核心。
+**解决（正确姿势）**：永远用 `with_structured_output(PydanticModel)`，别自己 `json.loads`——让框架替你处理解析与重试。
 
 ### 10. `ValidationError: ... Field required`
 **原因**：模型输出缺字段或类型不对，被 Pydantic 拦住——**这是好事，不是 bug**（带病运行才是灾难）。
@@ -84,7 +84,7 @@ EMBEDDING_MODEL=BAAI/bge-m3
 
 ### 12. 检索到的段落和问题不相关
 **原因**：embedding 质量或分块策略问题。
-**解决**：换更好的 embedding（bge-m3 > bge-small）；调小 `chunk_size`（500 → 300）；M4 用评估集量化对比。
+**解决**：换更好的 embedding（bge-m3 > bge-small）；调小 `chunk_size`（500 → 300）；并用评估集量化对比效果。
 
 ### 13. 入库后重新入库，回答反而变差/重复
 **原因**：同一批文档入了几次库，向量库里是重复块。

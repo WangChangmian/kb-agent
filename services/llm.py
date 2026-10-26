@@ -2,7 +2,7 @@
 
 为什么单独一层？
 换模型、加日志、加缓存、统一超时/重试 —— 都只改这一个文件。
-（企业里还会在这层接 LangSmith / Langfuse 做 tracing，M4 讲）
+（企业里还会在这层接 LangSmith / Langfuse 做 tracing）
 """
 from langchain_openai import ChatOpenAI
 

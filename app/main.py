@@ -20,6 +20,14 @@ async def chat_stream(req:ChatRequest):
     async def gen():
         try:
             docs = retrieve(req.question)
+
+            # 硬防线：rerank 后一条都不剩 = 知识库里没有答案 → 直接拒答，
+            # 不给模型编造的机会（也省掉一次 LLM 调用）
+            if not docs:
+                yield f"data: {json.dumps({'type': 'token', 'content': '资料中未找到相关内容。'}, ensure_ascii=False)}\n\n"
+                yield f"data: {json.dumps({'type': 'sources', 'sources': []}, ensure_ascii=False)}\n\n"
+                return
+
             context = "\n\n".join(d.page_content for d in docs)
             chain = _build_chain()
             async for chunk in chain.astream({"context": context, "question": req.question}):
@@ -29,7 +37,7 @@ async def chat_stream(req:ChatRequest):
             sources = [{
                 "source": d.metadata.get("source", "未知来源"),
                 "content": d.page_content[:100],
-                "score": d.metadata.get("score", 0.0), }
+                "score": d.metadata.get("rerank_score", d.metadata.get("score", 0.0)), }
                 for d in docs
             ]
             yield f"data: {json.dumps({'type': 'sources', 'sources': sources}, ensure_ascii=False)}\n\n"

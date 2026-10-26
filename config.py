@@ -42,9 +42,18 @@ class Settings(BaseSettings):
     vector_backend: str = "chroma"
     milvus_uri: str = "http://127.0.0.1:19530"
 
-    # ---- 检索参数（M1 课我们一起调）----
-    retriever_top_k: int = 4
-    retriever_score_threshold: float = 0.2
+    # ---- Rerank 精排（可选：rerank_api_key 留空则复用 embedding / llm 的 key）----
+    # 为什么要 rerank：embedding 对中文区分度差（相关块 0.76 / 无关块 0.58，差 0.18，没法设阈值）；
+    # cross-encoder 精排后（相关 0.94 / 无关 0.001，差 0.94），才可以靠绝对分数判断"库里有没有答案"。
+    rerank_url: str = "https://api.siliconflow.cn/v1/rerank"
+    rerank_model: str = "BAAI/bge-reranker-v2-m3"
+    rerank_api_key: str = ""                         # 留空则复用 embedding 的 key
+
+    # ---- 检索参数----
+    retriever_top_k: int = 4                         # 精排后最终返回几条
+    retriever_recall_k: int = 16                     # 召回阶段取几条交给 rerank
+    retriever_score_threshold: float = 0.2           # embedding 分数门槛（粗筛）
+    rerank_score_threshold: float = 0.1              # rerank 分数门槛（判定"库中有没有答案"）
 
     @property
     def vector_db_dir_abs(self) -> str:

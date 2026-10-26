@@ -51,7 +51,7 @@ class AgentSession:
                 if isinstance(result, dict) and "error" in result:
                     fail_count += 1
                     if fail_count >= self.max_failures:     # 安全锁②：连续失败熔断
-                        return "查询失败，可能是工号不存在或输入有误，请确认后重试。"
+                        return "多次调用工具未能成功，请确认您提供的信息后重试。"
                 else:
                     fail_count = 0                          # 成功一次即清零
 
